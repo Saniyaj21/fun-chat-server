@@ -12,7 +12,12 @@ app.use(cors({
   exposedHeaders: ['X-Total-Count'],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true,
-}));
+  allowedHeaders: ["Content-Type", "Authorization", "X-Total-Count"],
+
+  transports: ['websocket', 'polling'],
+},
+
+));
 
 // Socket.IO configuration
 const io = new Server(server, {
