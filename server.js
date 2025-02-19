@@ -8,10 +8,19 @@ const server = http.createServer(app);
 
 // CORS configuration for Express
 app.use(cors({
-  origin: 'https://corona-chat.vercel.app',
-  methods: ['GET', 'POST'],
+  origin: "https://corona-chat.vercel.app",
+  exposedHeaders: ['X-Total-Count'],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  credentials: true,
 }));
-
+server.use(
+  cors({
+    origin: "https://corona-chat.vercel.app",
+    exposedHeaders: ['X-Total-Count'],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    credentials: true,
+  })
+);
 // Socket.IO configuration
 const io = new Server(server, {
   cors: {
