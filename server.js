@@ -1,50 +1,25 @@
 import express from 'express';
-import http from 'http';
+import { createServer } from 'node:http';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import { Server } from 'socket.io';
-import cors from 'cors';
 
 const app = express();
-const server = http.createServer(app);
+const server = createServer(app);
+const io = new Server(server);
 
-// CORS configuration for Express
-app.use(cors({
-  origin: "https://corona-chat.vercel.app",
-  exposedHeaders: ['X-Total-Count'],
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  credentials: true,
-  allowedHeaders: ["Content-Type", "Authorization", "X-Total-Count"],
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-  transports: ['websocket', 'polling'],
-},
-
-));
-
-// Socket.IO configuration
-const io = new Server(server, {
-  cors: {
-    origin: 'https://corona-chat.vercel.app',
-    methods: ['GET', 'POST'],
-  },
-  transports: ['websocket', 'polling'], // Explicitly allow both
+app.get('/', (req, res) => {
+  res.sendFile(join(__dirname, 'index.html'));
 });
 
 io.on('connection', (socket) => {
-  console.log('A user connected');
-
-  socket.on('message', (message) => {
-    io.emit('message', message); // Broadcast the message to all clients
+  socket.on('chat message', (msg) => {
+    io.emit('chat message', msg);
   });
-
-  socket.on('disconnect', () => {
-    console.log('A user disconnected');
-  });
-});
-
-
-app.get('/', (req, res) => {
-  res.send('Hello World!');
 });
 
 server.listen(8080, () => {
-  console.log('Server is running on port 3001');
+  console.log('server running at http://localhost:8080');
 });
