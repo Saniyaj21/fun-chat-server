@@ -13,11 +13,7 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization", "X-Total-Count"],
-
-},
-
-
-));
+}));
 
 // Socket.IO configuration
 const io = new Server(server, {
@@ -25,11 +21,18 @@ const io = new Server(server, {
     origin: '*',
     methods: ['GET', 'POST'],
   },
-  transports: ['websocket', 'polling'], // Explicitly allow both
+  transports: ['websocket', 'polling'],
 });
+
+// Track connected users
+let activeUsers = 0;
 
 io.on('connection', (socket) => {
   console.log('A user connected');
+  activeUsers++;
+  
+  // Emit active users count to all clients
+  io.emit('activeUsers', activeUsers);
 
   socket.on('message', (message) => {
     io.emit('message', message); // Broadcast the message to all clients
@@ -37,14 +40,15 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('A user disconnected');
+    activeUsers--;
+    io.emit('activeUsers', activeUsers); // Update count on disconnect
   });
 });
-
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
 server.listen(8080, () => {
-  console.log('Server is running on port 3001');
+  console.log('Server is running on port 8080');
 });
