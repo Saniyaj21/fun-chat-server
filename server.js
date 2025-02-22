@@ -35,13 +35,17 @@ io.on('connection', (socket) => {
   io.emit('activeUsers', activeUsers);
 
   socket.on('message', (message) => {
-    io.emit('message', message); // Broadcast the message to all clients
+    // Broadcast the message with the sender's socket ID
+    io.emit('message', {
+      text: message,
+      senderId: socket.id, // Include sender's socket ID
+    });
   });
 
   socket.on('disconnect', () => {
     console.log('A user disconnected');
     activeUsers--;
-    io.emit('activeUsers', activeUsers); // Update count on disconnect
+    io.emit('activeUsers', activeUsers);
   });
 });
 
