@@ -35,11 +35,8 @@ io.on('connection', (socket) => {
   io.emit('activeUsers', activeUsers);
 
   socket.on('message', (message) => {
-    // Broadcast the message with the sender's socket ID
-    io.emit('message', {
-      text: message,
-      senderId: socket.id, // Include sender's socket ID
-    });
+    // Broadcast the message to all clients EXCEPT the sender
+    socket.broadcast.emit('message', message);
   });
 
   socket.on('disconnect', () => {
