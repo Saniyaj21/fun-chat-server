@@ -6,6 +6,10 @@ const messageSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    name: { // Add name field
+        type: String,
+        required: true,
+    },
     timestamp: {
         type: Date,
         default: Date.now,
