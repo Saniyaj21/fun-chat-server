@@ -35,6 +35,7 @@ io.on('connection', (socket) => {
   io.emit('activeUsers', activeUsers);
 
   socket.on('message', (message) => {
+    console.log('Broadcasting message:', message); // Debug log
     // Broadcast the message to all clients EXCEPT the sender
     socket.broadcast.emit('message', message);
   });
