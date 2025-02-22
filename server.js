@@ -10,6 +10,12 @@ const app = express();
 const server = http.createServer(app);
 connectDB();
 
+
+// routes import
+
+import messageRoute from './routes/messageRoute.js';
+
+
 // CORS configuration for Express
 app.use(cors({
   origin: "*",
@@ -72,7 +78,7 @@ io.on('connection', (socket) => {
 
 
 
-
+app.use("/api/messages", messageRoute);
 
 
 app.get('/', (req, res) => {
