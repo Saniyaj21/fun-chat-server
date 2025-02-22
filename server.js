@@ -52,16 +52,16 @@ io.on('connection', (socket) => {
   io.emit('activeUsers', activeUsers);
 
 
-  socket.on('message', (message) => {
-    console.log('Broadcasting message:', message); // Debug log
+  socket.on('message', (messageData) => {
+    console.log('Broadcasting message:', messageData); // Debug log
     // Broadcast the message to all clients EXCEPT the sender
-    socket.broadcast.emit('message', message);
+    socket.broadcast.emit('message', messageData);
 
     // Save to MongoDB asynchronously
-    const newMessage = new Message({ text: message });
+    const newMessage = new Message({ text: messageData.text, name: messageData.name });
     newMessage.save()
-      .then(() => console.log('Message saved to MongoDB:', message))
-      .catch((err) => console.error('Error saving message to MongoDB:', err));
+      .then(() => console.log('1', messageData))
+      .catch((err) => console.error('0'));
 
   });
 
